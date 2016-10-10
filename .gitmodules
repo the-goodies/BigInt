@@ -1,0 +1,6 @@
+[submodule "lib/containers"]
+	path = lib/containers
+	url = https://github.com/the-goodies/containers.git
+[submodule "lib/utilities"]
+	path = lib/utilities
+	url = https://github.com/the-goodies/utilities.git
