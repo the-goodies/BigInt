@@ -2,9 +2,9 @@
 #define _bigint_h
 
 #include <cstdint>
-#include "lib/containers/Array.h"
-#include "lib/containers/error.h"
-#include "lib/utilities/mat.h"
+#include "lib/Array.h"
+#include "lib/error.h"
+#include "lib/mat.h"
 
 typedef std::int8_t  s8;
 typedef std::int16_t s16;
