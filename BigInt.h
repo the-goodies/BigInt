@@ -41,7 +41,7 @@ class BigInt
 			if (base == 16) result = "-8000000000000000";
 			return result;
 		}
-		if (n == 0) result.add('0');
+		if (n == 0) result.insert('0');
 		bool negative = false;
 		if (n < 0)
 		{
@@ -53,7 +53,7 @@ class BigInt
 		{	
 			while (n != 0)
 			{
-				result.add((n % 10) + '0');
+				result.insert((n % 10) + '0');
 				n /= 10;
 			}
 		}
@@ -61,7 +61,7 @@ class BigInt
 		{
 			while(n != 0)
 			{
-				result.add((n % 2) + '0');
+				result.insert((n % 2) + '0');
 				n /= 2;
 			}
 		}
@@ -72,12 +72,12 @@ class BigInt
 				char digit = n % 16;
 				if (digit >= 10) digit = digit - 10 + 'A';
 				else digit += '0'; 
-				result.add(digit);
+				result.insert(digit);
 				n /= 16;
 			}
 		}
 
-		if (negative) result.add('-');
+		if (negative) result.insert('-');
 		// need to reverse order
 		const s64 size = result.size();
 		for (s64 i = 0; i < size / 2; ++i)
@@ -130,7 +130,7 @@ class BigInt
 				result_digit -= BASE;
 				carry = true;
 			}
-			result.num.add(result_digit);
+			result.num.insert(result_digit);
 		}
 		// continue to add carry it if exists, otherwise add zero and append to result
 		for (s64 i = rhs_size; i < lhs_size; ++i)
@@ -146,10 +146,10 @@ class BigInt
 				result_digit -= BASE;
 				carry = true;
 			}
-			result.num.add(result_digit);
+			result.num.insert(result_digit);
 		}
 		// check for carry last time
-		if (carry) result.num.add(1);
+		if (carry) result.num.insert(1);
 	}
 
 	// result = lhs - rhs
@@ -176,7 +176,7 @@ class BigInt
 				result_digit += BASE;
 				carry = true;
 			}
-			result.num.add(result_digit);
+			result.num.insert(result_digit);
 		}
 		// continue to subtract carry it if exists, otherwise subtract zero and append to result
 		for (s64 i = rhs_size; i < lhs_size; ++i)
@@ -192,7 +192,7 @@ class BigInt
 				result_digit += BASE;
 				carry = true;
 			}
-			result.num.add(result_digit);
+			result.num.insert(result_digit);
 		}
 		// remove zeros from end, for example: 325 - 320, 
 		// which would be stored in reverse as 523 - 023 = 500 == 5
@@ -264,7 +264,7 @@ class BigInt
 			temp.num.clear(); // clear intermediate results
 			// need to shift intermediate results, example using base 10:
 			// 152 * 123 == 152 * 3 * 10^0(shift by 0) + 152 * 2 * 10(shift by 1) + 152 * 1 * 100(shift by 2) 
-			for (s64 shift = 0; shift < i; ++shift) temp.num.add(0); // adding zero to begining == mult by base
+			for (s64 shift = 0; shift < i; ++shift) temp.num.insert(0); // adding zero to begining == mult by base
 
 			u64 carry = 0;
 			for (s64 j = 0; j < lhs_size; ++j)
@@ -274,9 +274,9 @@ class BigInt
 
 				carry = temp_digit / BASE; // new carry for next cycle
 				temp_digit %= BASE;
-				temp.num.add(temp_digit);
+				temp.num.insert(temp_digit);
 			}
-			if (carry) temp.num.add(carry);
+			if (carry) temp.num.insert(carry);
 			result += temp;
 		}
 		if (lhs.positive != rhs.positive) result.positive = false; // different signs -> number is negative
@@ -294,25 +294,25 @@ class BigInt
 		lower_bound.num.clear();
 		for (s64 i = 0; i < length_diff - 1; ++i)
 		{
-			lower_bound.num.add(0);
+			lower_bound.num.insert(0);
 		}
-		lower_bound.num.add(1);
+		lower_bound.num.insert(1);
 
 		BigInt upper_bound;
 		upper_bound.num.clear();
 		for (s64 i = 0; i < length_diff + 1; ++i)
 		{
-			upper_bound.num.add(0);
+			upper_bound.num.insert(0);
 		}
-		upper_bound.num.add(1);
+		upper_bound.num.insert(1);
 
 		BigInt result;
 		result.num.clear();
 		for (s64 i = 0; i < length_diff; ++i)
 		{
-			result.num.add(0);
+			result.num.insert(0);
 		}
-		result.num.add(1);
+		result.num.insert(1);
 		
 		// have to make copies of this and rhs because of posible negative sign in them
 		BigInt dividend(*this);
@@ -364,17 +364,17 @@ class BigInt
 
 		BigInt ac(mult_karatsuba(a, c));
 		Array<u64> ac_shifted; // adding zero to begining == mult by base
-		for (s64 shift = 0; shift < lhs_size; ++shift) ac_shifted.add(0);
+		for (s64 shift = 0; shift < lhs_size; ++shift) ac_shifted.insert(0);
 		if (lhs_size % 2) ac_shifted.remove(lhs_size - 1); // if odd then B^(n/2)*a * B^(n/2)*c == B^(n-1)*a*c
-		for (s64 digit_i = 0; digit_i < ac.num.size(); ++digit_i) ac_shifted.add(ac.num.data[digit_i]);
+		for (s64 digit_i = 0; digit_i < ac.num.size(); ++digit_i) ac_shifted.insert(ac.num.data[digit_i]);
 
 		BigInt a_plus_b(a + b);
 		BigInt c_plus_d(c + d);
 		BigInt bd(mult_karatsuba(b, d));
 		BigInt ad_plus_bc(mult_karatsuba(a_plus_b, c_plus_d) - ac - bd);
 		Array<u64> ad_plus_bc_shifted; // adding zero to begining == mult by base
-		for (s64 shift = 0; shift < lhs_middle; ++shift) ad_plus_bc_shifted.add(0);
-		for (s64 digit_i = 0; digit_i < ad_plus_bc.num.size(); ++digit_i) ad_plus_bc_shifted.add(ad_plus_bc.num.data[digit_i]);
+		for (s64 shift = 0; shift < lhs_middle; ++shift) ad_plus_bc_shifted.insert(0);
+		for (s64 digit_i = 0; digit_i < ad_plus_bc.num.size(); ++digit_i) ad_plus_bc_shifted.insert(ad_plus_bc.num.data[digit_i]);
 
 		return BigInt(std::move(ac_shifted)) + bd + BigInt(std::move(ad_plus_bc_shifted));
 	}
@@ -404,11 +404,11 @@ class BigInt
 	void intToArray(u64 n)
 	{
 		this->num.clear();
-		if (n == 0) this->num.add(0);
+		if (n == 0) this->num.insert(0);
 
 		while (n != 0)
 		{
-			this->num.add(n % BASE);
+			this->num.insert(n % BASE);
 			n /= BASE;
 		}
 	}
@@ -498,12 +498,12 @@ public:
 				temp_value += mat::pow(10, cycle_of_nine++) * digit;
 				if (cycle_of_nine == 9)
 				{
-					num.add(temp_value);
+					num.insert(temp_value);
 					temp_value = 0;
 					cycle_of_nine = 0;
 				}
 			}
-			if (cycle_of_nine) num.add(temp_value);
+			if (cycle_of_nine) num.insert(temp_value);
 			if (sign && size == 1) ERROR("Can't create BigInt object: given container (size 1) has bad symbol");
 		}
 
@@ -695,7 +695,7 @@ public:
 		if (this->positive && !rhs.positive)
 		{
 			s8 compare = comparePositive(rhs);
-			if (compare == 0) result.num.add(0); // equal in size, but different sign
+			if (compare == 0) result.num.insert(0); // equal in size, but different sign
 			if (compare == 1) subtract(*this, rhs, result);
 			if (compare == -1)
 			{
@@ -707,7 +707,7 @@ public:
 		if (!this->positive && rhs.positive)
 		{
 			s8 compare = comparePositive(rhs);
-			if (compare == 0) result.num.add(0); // equal in size, but different sign
+			if (compare == 0) result.num.insert(0); // equal in size, but different sign
 			if (compare == -1) subtract(rhs, *this, result);
 			if (compare == 1)
 			{
@@ -732,7 +732,7 @@ public:
 		if (this->positive && rhs.positive)
 		{
 			s8 compare = comparePositive(rhs);
-			if (compare == 0) result.num.add(0);
+			if (compare == 0) result.num.insert(0);
 			if (compare == 1) subtract(*this, rhs, result);
 			if (compare == -1)
 			{
@@ -744,7 +744,7 @@ public:
 		if (!this->positive && !rhs.positive)
 		{
 			s8 compare = comparePositive(rhs);
-			if (compare == 0) result.num.add(0);
+			if (compare == 0) result.num.insert(0);
 			if (compare == -1) subtract(rhs, *this, result);
 			if (compare == 1)
 			{
@@ -856,7 +856,7 @@ public:
 				}
 				this->num[i] = 0;
 			}
-			if (carry) this->num.add(1);
+			if (carry) this->num.insert(1);
 		}
 		else if (size == 1 && this->num[0] == 1) // this == -1
 		{
@@ -904,7 +904,7 @@ public:
 				}
 				this->num[i] = 0;
 			}
-			if (carry) this->num.add(0);
+			if (carry) this->num.insert(0);
 		}
 		else if (size == 1 && this->num[0] == 0) // this == 0
 		{
@@ -949,14 +949,14 @@ public:
 		s32 multiple_of_eight = 0;
 		while(temp != zero)
 		{
-			if (multiple_of_eight == 4) result.add(' '); // every 4 bits add a space
+			if (multiple_of_eight == 4) result.insert(' '); // every 4 bits add a space
 			if (multiple_of_eight == 8) // every byte add 2 spaces
 			{
-				result.add(' '); result.add(' ');
+				result.insert(' '); result.insert(' ');
 				multiple_of_eight = 0;
 			}
-			if (temp.modulusByTwo()) result.add('1');
-			else 					 result.add('0');
+			if (temp.modulusByTwo()) result.insert('1');
+			else 					 result.insert('0');
 			temp = temp.divideByTwo();
 			++multiple_of_eight;
 		}
@@ -965,10 +965,10 @@ public:
 		for (s32 i = 0; i < additional_zeros; ++i)
 		{
 			// check for a multiple of 4 to add a space
-			if (additional_zeros - i == 4) result.add(' ');
-			result.add('0');
+			if (additional_zeros - i == 4) result.insert(' ');
+			result.insert('0');
 		}
-		if (!this->positive) result.add('-');
+		if (!this->positive) result.insert('-');
 		// need to reverse order
 		const s64 size = result.size();
 		for (s64 i = 0; i < size / 2; ++i)
@@ -997,7 +997,7 @@ public:
 	friend std::ostream & operator<<(std::ostream & os, const BigInt & rhs)
 	{
 		Array<char> result;
-		if (!rhs.positive) result.add('-');
+		if (!rhs.positive) result.insert('-');
 
 		s64 size = rhs.num.size();
 		Array<char> digit = itoa((s64)rhs.num[size - 1]);
@@ -1009,10 +1009,10 @@ public:
 		{
 			if (third == 3)
 			{
-				result.add('.');
+				result.insert('.');
 				third = 0;
 			}
-			result.add(digit[subdigit_i]);
+			result.insert(digit[subdigit_i]);
 			++third;
 		}
 		// finish every other digit
@@ -1023,13 +1023,13 @@ public:
 			// every digit has to be of size 9, if not pad with zeros
 			for (s64 pad_zeros = 0; pad_zeros < 9 - digit_size; ++pad_zeros)
 			{
-				if (pad_zeros % 3 == 0) result.add('.');
-				result.add('0');
+				if (pad_zeros % 3 == 0) result.insert('.');
+				result.insert('0');
 			}
 			for (s64 subdigit_i = 0; subdigit_i < digit_size; ++subdigit_i)
 			{
-				if ((9 - digit_size + subdigit_i) % 3 == 0) result.add('.');
-				result.add(digit[subdigit_i]);
+				if ((9 - digit_size + subdigit_i) % 3 == 0) result.insert('.');
+				result.insert(digit[subdigit_i]);
 			}
 		}
 		return os << result;
