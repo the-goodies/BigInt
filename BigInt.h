@@ -606,7 +606,7 @@ public:
 		return *this;
 	}
 
-	~BigInt() {}
+	~BigInt() { /* empty */ }
 
 	bool operator>(const BigInt & rhs) const
 	{

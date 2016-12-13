@@ -1,6 +1,6 @@
-#include "lib/utilities/error.h"
-#include "lib/containers/Array.h"
-#include "lib/utilities/utility.h"
+#include "lib/error.h"
+#include "lib/Array.h"
+#include "lib/utility.h"
 #include "BigInt.h"
 #include <ctime>
 
